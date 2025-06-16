@@ -1,9 +1,0 @@
-interface Request {
-    // Define las propiedades necesarias para la interfaz Request
-}
-
-interface Response {
-    // Define las propiedades necesarias para la interfaz Response
-}
-
-export { Request, Response };
