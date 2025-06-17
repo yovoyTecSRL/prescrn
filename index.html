@@ -92,7 +92,6 @@
     }
 
     function responder(data) {
-        // Simula el comportamiento del backend
         if (paso === 1) {
             if (!data.nombre) return { paso: 1, pregunta: "¿Cuál es tu nombre completo?" };
             return { paso: 2, pregunta: "¿Cuál es tu cédula?" };
@@ -110,26 +109,23 @@
 
         if (paso === 4) {
             if (!data.direccion) return { paso: 4, pregunta: "¿Cuál es la dirección de entrega de la tarjeta?" };
-            validando = "PROTECTORA";
             return { validando: true, mensaje: "Validando en CCSS...", siguiente: "PROTECTORA" };
         }
 
         if (validando === "PROTECTORA") {
-            validando = "BCR";
             return { validando: true, mensaje: "Validando en Protectora de Crédito...", siguiente: "BCR" };
         }
 
         if (validando === "BCR") {
-            validando = "HACIENDA";
             return { validando: true, mensaje: "Validando en Banco de Costa Rica...", siguiente: "HACIENDA" };
         }
 
         if (validando === "HACIENDA") {
-            validando = "FINAL";
             return { validando: true, mensaje: "Validando en Ministerio de Hacienda...", siguiente: "FINAL" };
         }
 
         if (validando === "FINAL") {
+            validando = null; // rompe el ciclo
             return {
                 pregunta_final: true,
                 mensaje: `¿La dirección de entrega es la misma que escribiste: "${datos.direccion}"? (Responde sí o no)`
@@ -170,11 +166,6 @@
         if (r.pregunta) {
             agregarMensaje("Banco: " + r.pregunta, "bot");
         }
-        if (r.validando) {
-            agregarMensaje("Banco: " + r.mensaje, "bot");
-            validando = r.siguiente;
-            setTimeout(iniciarValidaciones, 1000);
-        }
         if (r.pregunta_final) {
             agregarMensaje("Banco: " + r.mensaje, "bot");
             esperando_confirmacion = true;
@@ -193,9 +184,19 @@
         }
     }
 
-    function iniciarValidaciones() {
-        const r = responder(datos);
-        procesarRespuesta(r);
+    async function iniciarValidaciones() {
+        while (validando) {
+            const r = responder(datos);
+
+            if (!r.validando) {
+                procesarRespuesta(r);
+                break;
+            }
+
+            agregarMensaje("Banco: " + r.mensaje, "bot");
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            validando = r.siguiente;
+        }
     }
 
     form.addEventListener("submit", function (e) {
@@ -231,7 +232,7 @@
 
         if (r.validando) {
             validando = r.siguiente;
-            iniciarValidaciones();
+            iniciarValidaciones(); // async loop sin loops infinitos
         } else {
             procesarRespuesta(r);
         }
@@ -239,6 +240,7 @@
 
     agregarMensaje("Banco: ¡Bienvenido! Vamos a solicitar tu tarjeta de crédito. ¿Cuál es tu nombre completo?", "bot");
 });
+
 
     </script>
 </body>
