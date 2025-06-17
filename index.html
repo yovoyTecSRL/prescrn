@@ -8,27 +8,23 @@
     <link rel="stylesheet" href="./css/styles.css">
     <style>
     </style>
-
 </head>
 <body>
     <div class="banco-header">
         <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Banco Logo" class="logo"/>
         <h1>Banco Validación</h1>
-        
-  <div class="bandera">
-        <div class="franja azul"></div>
-        <div class="franja blanco"></div>
-        <div class="franja rojo"></div>
-        <div class="franja blanco"></div>
-        <div class="franja azul"></div>
-  </div>
+        <div class="bandera">
+            <div class="franja azul"></div>
+            <div class="franja blanco"></div>
+            <div class="franja rojo"></div>
+            <div class="franja blanco"></div>
+            <div class="franja azul"></div>
+        </div>
         <div class="sub">Solicita tu tarjeta de crédito en minutos</div>
     </div>
 
-    
     <div class="nav" >
-      <button onclick="ejecutarPruebasInteractivo()"
-            class="button">
+        <button onclick="ejecutarPruebasInteractivo()" class="button">
             Pruebas Automáticas
         </button>
         <a href="./pruebas-automaticas.html" class="button">Ver Pruebas</a>
@@ -55,193 +51,260 @@
         &copy; 2025 Banco Validación. Todos los derechos reservados.
     </div>
     <div style="text-align:center; margin-top:24px;">
-        
         <div id="resultados-pruebas" style="margin-top:18px; color:#222; font-size:1.05em;"></div>
     </div>
-   
-    <script >
+    
+    <script>
         document.addEventListener("DOMContentLoaded", () => {
-    const chat = document.getElementById("chat");
-    const form = document.getElementById("chatForm");
-    const input = document.getElementById("input");
-    let paso = 1;
-    let datos = {};
-    let validando = null;
-    let esperando_confirmacion = false;
-    let esperando_nueva_direccion = false;
-
-    function agregarMensaje(texto, clase) {
-        const div = document.createElement("div");
-        div.className = clase;
-        div.textContent = texto;
-        chat.appendChild(div);
-        chat.scrollTop = chat.scrollHeight;
-    }
-
-    function reproducirSonido() {
-        const audio = new Audio('https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa4c82.mp3');
-        audio.play();
-    }
-
-    function hablar(texto) {
-        if ('speechSynthesis' in window) {
-            const utter = new SpeechSynthesisUtterance(texto);
-            utter.lang = 'es-ES';
-            window.speechSynthesis.speak(utter);
-        }
-    }
-
-    function responder(data) {
-        if (paso === 1) {
-            if (!data.nombre) return { paso: 1, pregunta: "¿Cuál es tu nombre completo?" };
-            return { paso: 2, pregunta: "¿Cuál es tu cédula?" };
-        }
-
-        if (paso === 2) {
-            if (!data.cedula) return { paso: 2, pregunta: "¿Cuál es tu cédula?" };
-            return { paso: 3, pregunta: "¿Cuál es tu teléfono?" };
-        }
-
-        if (paso === 3) {
-            if (!data.telefono) return { paso: 3, pregunta: "¿Cuál es tu teléfono?" };
-            return { paso: 4, pregunta: "¿Cuál es la dirección de entrega de la tarjeta?" };
-        }
-
-        if (paso === 4) {
-            if (!data.direccion) return { paso: 4, pregunta: "¿Cuál es la dirección de entrega de la tarjeta?" };
-            return { validando: true, mensaje: "Validando en CCSS...", siguiente: "PROTECTORA" };
-        }
-
-        if (validando === "PROTECTORA") {
-            return { validando: true, mensaje: "Validando en Protectora de Crédito...", siguiente: "BCR" };
-        }
-
-        if (validando === "BCR") {
-            return { validando: true, mensaje: "Validando en Banco de Costa Rica...", siguiente: "HACIENDA" };
-        }
-
-        if (validando === "HACIENDA") {
-            return { validando: true, mensaje: "Validando en Ministerio de Hacienda...", siguiente: "FINAL" };
-        }
-
-        if (validando === "FINAL") {
-            validando = null; // rompe el ciclo
-            return {
-                pregunta_final: true,
-                mensaje: `¿La dirección de entrega es la misma que escribiste: "${datos.direccion}"? (Responde sí o no)`
-            };
-        }
-
-        if (data.direccion_confirmada === "si") {
-            const numero = Math.floor(100000 + Math.random() * 900000);
-            return {
-                orden_creada: true,
-                mensaje: `¡Felicidades! Clasificaste para una tarjeta. Tu número de solicitud es: ${numero}.`,
-                numeroSolicitud: numero
-            };
-        }
-
-        if (data.direccion_confirmada === "no") {
-            esperando_nueva_direccion = true;
-            return {
-                pide_nueva_direccion: true,
-                mensaje: "Por favor, indícanos tu nueva dirección de entrega."
-            };
-        }
-
-        if (data.nueva_direccion) {
-            const numero = Math.floor(100000 + Math.random() * 900000);
-            datos.direccion = data.nueva_direccion;
-            return {
-                orden_creada: true,
-                mensaje: `¡Gracias! Enviaremos tu tarjeta a: "${data.nueva_direccion}". Tu número de solicitud es: ${numero}.`,
-                numeroSolicitud: numero
-            };
-        }
-
-        return { mensaje: "Algo salió mal..." };
-    }
-
-    function procesarRespuesta(r) {
-        if (r.pregunta) {
-            agregarMensaje("Banco: " + r.pregunta, "bot");
-        }
-        if (r.pregunta_final) {
-            agregarMensaje("Banco: " + r.mensaje, "bot");
-            esperando_confirmacion = true;
-        }
-        if (r.pide_nueva_direccion) {
-            agregarMensaje("Banco: " + r.mensaje, "bot");
-            esperando_nueva_direccion = true;
-        }
-        if (r.orden_creada) {
-            agregarMensaje("Banco: " + r.mensaje, "bot");
-            reproducirSonido();
-            setTimeout(() => {
-                hablar(r.mensaje);
-            }, 800);
-            form.style.display = "none";
-        }
-    }
-
-    async function iniciarValidaciones() {
-        while (validando) {
-            const r = responder(datos);
-
-            if (!r.validando) {
-                procesarRespuesta(r);
-                break;
+            const chat = document.getElementById("chat");
+            const form = document.getElementById("chatForm");
+            const input = document.getElementById("input");
+        
+            let paso = 1;
+            let datos = {};
+            let validando = false;
+            let validacionCompletada = false;
+            let flujoFinalizado = false;
+            let indexValidacion = 0;
+            const secuencia = ["CCSS", "BCR", "HACIENDA", "FINAL"];
+            let esperando_nueva_direccion = false;
+            let preguntaFinalMostrada = false;
+        
+            function agregarMensaje(texto, clase) {
+                const div = document.createElement("div");
+                div.className = clase;
+                div.textContent = texto;
+                chat.appendChild(div);
+                chat.scrollTop = chat.scrollHeight;
             }
-
-            agregarMensaje("Banco: " + r.mensaje, "bot");
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            validando = r.siguiente;
-        }
-    }
-
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const valor = input.value.trim();
-        if (!valor) return;
-        agregarMensaje("Tú: " + valor, "user");
-        input.value = "";
-
-        if (esperando_confirmacion) {
-            esperando_confirmacion = false;
-            const r = responder({ direccion_confirmada: valor.toLowerCase() });
-            procesarRespuesta(r);
-            return;
-        }
-
-        if (esperando_nueva_direccion) {
-            esperando_nueva_direccion = false;
-            const r = responder({ nueva_direccion: valor });
-            procesarRespuesta(r);
-            return;
-        }
-
-        switch (paso) {
-            case 1: datos.nombre = valor; break;
-            case 2: datos.cedula = valor; break;
-            case 3: datos.telefono = valor; break;
-            case 4: datos.direccion = valor; break;
-        }
-
-        const r = responder(datos);
-        paso = r.paso || paso;
-
-        if (r.validando) {
-            validando = r.siguiente;
-            iniciarValidaciones(); // async loop sin loops infinitos
-        } else {
-            procesarRespuesta(r);
-        }
-    });
-
-    agregarMensaje("Banco: ¡Bienvenido! Vamos a solicitar tu tarjeta de crédito. ¿Cuál es tu nombre completo?", "bot");
-});
-
-
-    </script>
+        
+            function reproducirSonido() {
+                const audio = new Audio('https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa4c82.mp3');
+                audio.play();
+            }
+        
+            function hablar(texto) {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                    const utter = new SpeechSynthesisUtterance(texto);
+                    utter.lang = 'es-ES';
+                    window.speechSynthesis.speak(utter);
+                }
+            }
+        
+            function validarCedula(cedula) {
+                return /^\d{9,10}$/.test(cedula);
+            }
+        
+            function validarTelefono(telefono) {
+                return /^[2678]\d{7}$/.test(telefono);
+            }
+        
+            function responder(data) {
+                if (typeof data === "string" && validacionCompletada && !flujoFinalizado) {
+                    const texto = data.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                    if (["si", "sí", "no"].includes(texto)) {
+                        if (texto === "si") {
+                            const numero = Math.floor(100000 + Math.random() * 900000);
+                            flujoFinalizado = true;
+                            return {
+                                orden_creada: true,
+                                mensaje: `¡Felicidades! Clasificaste para una tarjeta. Tu número de solicitud es: ${numero}.`,
+                                numeroSolicitud: numero
+                            };
+                        } else {
+                            esperando_nueva_direccion = true;
+                            return {
+                                pide_nueva_direccion: true,
+                                mensaje: "Por favor, indícanos tu nueva dirección de entrega."
+                            };
+                        }
+                    } else {
+                        return { mensaje: "Por favor responde únicamente con 'sí' o 'no'." };
+                    }
+                }
+        
+                if (flujoFinalizado) {
+                    return {
+                        mensaje: "Gracias, ya finalizamos tu solicitud. Por favor, hacé clic en 'Iniciar otra solicitud' si querés reiniciar."
+                    };
+                }
+        
+                if (paso === 1) {
+                    if (!data.nombre) return { paso: 1, pregunta: "¿Cuál es tu nombre completo?" };
+                    return { paso: 2, pregunta: "¿Cuál es tu cédula?" };
+                }
+        
+                if (paso === 2) {
+                    if (!data.cedula) return { paso: 2, pregunta: "¿Cuál es tu cédula?" };
+                    if (!validarCedula(data.cedula)) return { paso: 2, pregunta: "La cédula no es válida. Intenta de nuevo." };
+                    return { paso: 3, pregunta: "¿Cuál es tu teléfono?" };
+                }
+        
+                if (paso === 3) {
+                    if (!data.telefono) return { paso: 3, pregunta: "¿Cuál es tu teléfono?" };
+                    if (!validarTelefono(data.telefono)) return { paso: 3, pregunta: "El número de teléfono no es válido. Debe tener 8 dígitos y empezar con 2, 6, 7 u 8." };
+                    return { paso: 4, pregunta: "¿Cuál es la dirección de entrega de la tarjeta?" };
+                }
+        
+                if (paso === 4) {
+                    if (!data.direccion) return { paso: 4, pregunta: "¿Cuál es la dirección de entrega de la tarjeta?" };
+                    if (!validando && !validacionCompletada) {
+                        validando = true;
+                        indexValidacion = 0;
+                        return { validando: true, mensaje: "Iniciando validaciones...", siguiente: secuencia[0] };
+                    }
+                    return {};
+                }
+        
+                if (data.nueva_direccion) {
+                    const numero = Math.floor(100000 + Math.random() * 900000);
+                    datos.direccion = data.nueva_direccion;
+                    flujoFinalizado = true;
+                    return {
+                        orden_creada: true,
+                        mensaje: `¡Gracias! Enviaremos tu tarjeta a: "${data.nueva_direccion}". Tu número de solicitud es: ${numero}.`,
+                        numeroSolicitud: numero
+                    };
+                }
+        
+                return { mensaje: "Algo salió mal..." };
+            }
+        
+            function procesarRespuesta(r) {
+                if (r.pregunta) agregarMensaje("Banco: " + r.pregunta, "bot");
+                if (r.pregunta_final && !preguntaFinalMostrada) {
+                    agregarMensaje("Banco: " + r.mensaje, "bot");
+                    preguntaFinalMostrada = true;
+                }
+        
+                if (r.pide_nueva_direccion) {
+                    esperando_nueva_direccion = true;
+                    agregarMensaje("Banco: " + r.mensaje, "bot");
+                } else if (r.mensaje && !r.orden_creada) {
+                    agregarMensaje("Banco: " + r.mensaje, "bot");
+                }
+        
+                if (r.orden_creada) {
+                    agregarMensaje("Banco: " + r.mensaje, "bot");
+                    reproducirSonido();
+                    setTimeout(() => hablar(r.mensaje), 800);
+                    form.style.display = "none";
+                    crearBotonReiniciar();
+                }
+            }
+        
+            async function iniciarValidaciones() {
+                const mensajes = {
+                    "CCSS": "Validando en CCSS...",
+                    "BCR": "Validando en Banco de Costa Rica...",
+                    "HACIENDA": "Validando en Ministerio de Hacienda...",
+                    "FINAL": `¿La dirección de entrega es la misma que escribiste: "${datos.direccion}"? (Responde sí o no)`
+                };
+        
+                while (validando && indexValidacion < secuencia.length) {
+                    const etapa = secuencia[indexValidacion];
+        
+                    if (etapa === "FINAL") {
+                        validando = false;
+                        validacionCompletada = true;
+        
+                        if (!preguntaFinalMostrada) {
+                            preguntaFinalMostrada = true;
+                            procesarRespuesta({
+                                pregunta_final: true,
+                                mensaje: mensajes["FINAL"]
+                            });
+                        }
+                        break;
+                    }
+        
+                    agregarMensaje("Banco: " + mensajes[etapa], "bot");
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    indexValidacion++;
+                }
+            }
+        
+            function crearBotonReiniciar() {
+                const boton = document.createElement("button");
+                boton.textContent = "Iniciar otra solicitud";
+                boton.className = "reiniciar-boton";
+                boton.style.marginTop = "15px";
+                boton.onclick = () => {
+                    chat.innerHTML = "";
+                    form.style.display = "block";
+                    input.value = "";
+                    paso = 1;
+                    datos = {};
+                    validando = false;
+                    validacionCompletada = false;
+                    flujoFinalizado = false;
+                    esperando_nueva_direccion = false;
+                    preguntaFinalMostrada = false;
+                    indexValidacion = 0;
+                    agregarMensaje("Banco: ¡Bienvenido! Vamos a solicitar tu tarjeta de crédito. ¿Cuál es tu nombre completo?", "bot");
+                    boton.remove();
+                };
+                chat.appendChild(boton);
+                chat.scrollTop = chat.scrollHeight;
+            }
+        
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                const valor = input.value.trim();
+                if (!valor) return;
+        
+                agregarMensaje("Tú: " + valor, "user");
+                input.value = "";
+        
+                if (flujoFinalizado) {
+                    agregarMensaje("Banco: Ya finalizamos tu solicitud. Por favor, hacé clic en 'Iniciar otra solicitud' si querés reiniciar.", "bot");
+                    return;
+                }
+        
+                // ✅ CORREGIDO: no salir de nueva_direccion si es inválida
+                if (esperando_nueva_direccion) {
+                    const nuevaDireccion = valor.trim();
+                    if (nuevaDireccion.length < 5) {
+                        procesarRespuesta({
+                            mensaje: "La dirección es muy corta. Por favor, escribe una dirección válida."
+                        });
+                    } else {
+                        esperando_nueva_direccion = false;
+                        const r = responder({ nueva_direccion: nuevaDireccion });
+                        procesarRespuesta(r);
+                    }
+                    return;
+                }
+        
+                let r = {};
+        
+                if (validacionCompletada && !esperando_nueva_direccion) {
+                    r = responder(valor);
+                } else if (paso <= 4) {
+                    switch (paso) {
+                        case 1: datos.nombre = valor; break;
+                        case 2: datos.cedula = valor; break;
+                        case 3: datos.telefono = valor; break;
+                        case 4: datos.direccion = valor; break;
+                    }
+                    r = responder(datos);
+                    paso = r.paso || paso;
+                } else {
+                    r = responder(valor);
+                }
+        
+                if (r.validando) {
+                    iniciarValidaciones();
+                } else {
+                    procesarRespuesta(r);
+                }
+            });
+        
+            agregarMensaje("Banco: ¡Bienvenido! Vamos a solicitar tu tarjeta de crédito. ¿Cuál es tu nombre completo?", "bot");
+        });
+        </script>
+        
+    
 </body>
 </html>
