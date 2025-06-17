@@ -130,26 +130,72 @@
         }
 
         if (validando === "FINAL") {
-            return { pregunta_final: true, mensaje: `¿La dirección de entrega es la misma que escribiste: "${datos.direccion}"? (Responde sí o no)` };
+            return {
+                pregunta_final: true,
+                mensaje: `¿La dirección de entrega es la misma que escribiste: "${datos.direccion}"? (Responde sí o no)`
+            };
         }
 
         if (data.direccion_confirmada === "si") {
             const numero = Math.floor(100000 + Math.random() * 900000);
-            return { orden_creada: true, mensaje: `¡Felicidades! Clasificaste para una tarjeta. Tu número de solicitud es: ${numero}.`, numeroSolicitud: numero };
+            return {
+                orden_creada: true,
+                mensaje: `¡Felicidades! Clasificaste para una tarjeta. Tu número de solicitud es: ${numero}.`,
+                numeroSolicitud: numero
+            };
         }
 
         if (data.direccion_confirmada === "no") {
             esperando_nueva_direccion = true;
-            return { pide_nueva_direccion: true, mensaje: "Por favor, indícanos tu nueva dirección de entrega." };
+            return {
+                pide_nueva_direccion: true,
+                mensaje: "Por favor, indícanos tu nueva dirección de entrega."
+            };
         }
 
         if (data.nueva_direccion) {
             const numero = Math.floor(100000 + Math.random() * 900000);
             datos.direccion = data.nueva_direccion;
-            return { orden_creada: true, mensaje: `¡Gracias! Enviaremos tu tarjeta a: "${data.nueva_direccion}". Tu número de solicitud es: ${numero}.`, numeroSolicitud: numero };
+            return {
+                orden_creada: true,
+                mensaje: `¡Gracias! Enviaremos tu tarjeta a: "${data.nueva_direccion}". Tu número de solicitud es: ${numero}.`,
+                numeroSolicitud: numero
+            };
         }
 
         return { mensaje: "Algo salió mal..." };
+    }
+
+    function procesarRespuesta(r) {
+        if (r.pregunta) {
+            agregarMensaje("Banco: " + r.pregunta, "bot");
+        }
+        if (r.validando) {
+            agregarMensaje("Banco: " + r.mensaje, "bot");
+            validando = r.siguiente;
+            setTimeout(iniciarValidaciones, 1000);
+        }
+        if (r.pregunta_final) {
+            agregarMensaje("Banco: " + r.mensaje, "bot");
+            esperando_confirmacion = true;
+        }
+        if (r.pide_nueva_direccion) {
+            agregarMensaje("Banco: " + r.mensaje, "bot");
+            esperando_nueva_direccion = true;
+        }
+        if (r.orden_creada) {
+            agregarMensaje("Banco: " + r.mensaje, "bot");
+            reproducirSonido();
+            setTimeout(() => {
+                hablar(r.mensaje);
+            }, 800);
+            form.style.display = "none";
+        }
+    }
+
+    function iniciarValidaciones() {
+        const r = responder(datos);
+        procesarRespuesta(r);
     }
 
     form.addEventListener("submit", function (e) {
@@ -181,44 +227,19 @@
         }
 
         const r = responder(datos);
+        paso = r.paso || paso;
+
         if (r.validando) {
-            agregarMensaje("Banco: " + r.mensaje, "bot");
-            setTimeout(() => {
-                const siguiente = responder(datos);
-                procesarRespuesta(siguiente);
-            }, 1000);
+            validando = r.siguiente;
+            iniciarValidaciones();
         } else {
             procesarRespuesta(r);
         }
-
-        paso = r.paso || paso;
-        validando = r.siguiente || validando;
     });
-
-    function procesarRespuesta(r) {
-        if (r.pregunta) {
-            agregarMensaje("Banco: " + r.pregunta, "bot");
-        }
-        if (r.pregunta_final) {
-            agregarMensaje("Banco: " + r.mensaje, "bot");
-            esperando_confirmacion = true;
-        }
-        if (r.pide_nueva_direccion) {
-            agregarMensaje("Banco: " + r.mensaje, "bot");
-            esperando_nueva_direccion = true;
-        }
-        if (r.orden_creada) {
-            agregarMensaje("Banco: " + r.mensaje, "bot");
-            reproducirSonido();
-            setTimeout(() => {
-                hablar(r.mensaje);
-            }, 800);
-            form.style.display = "none";
-        }
-    }
 
     agregarMensaje("Banco: ¡Bienvenido! Vamos a solicitar tu tarjeta de crédito. ¿Cuál es tu nombre completo?", "bot");
 });
+
     </script>
 </body>
 </html>
