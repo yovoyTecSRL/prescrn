@@ -1,222 +1,249 @@
 
-        body {
-            background: linear-gradient(135deg, #0a1d43 60%, #0b192b 100%);
-            font-family: 'Roboto', Arial, sans-serif;
-            margin: 0;
-            min-height: 100vh;
-            min-width: 100vw;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .banco-header {
-            background: linear-gradient(90deg, #002b7f 0%, #ffffff 50%, #ce1126 100%);
-            color: #002b7f;
-            padding: 18px 0 12px 0;
-            text-align: center;
-            border-bottom-left-radius: 32px;
-            border-bottom-right-radius: 32px;
-            box-shadow: 0 4px 16px #002b7f22;
-            width: 100vw;
-            max-width: 430px;
-        }
-        .banco-header img.logo {
-            width: 54px;
-            margin-bottom: 8px;
-            vertical-align: middle;
-        }
-        .banco-header img.bandera {
-            width: 34px;
-            margin-left: 10px;
-            vertical-align: middle;
-        }
-        .banco-header h1 {
-            margin: 0;
-            font-size: 1.5em;
-            letter-spacing: 2px;
-            color: #002b7f;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        .banco-header .sub {
-            font-size: 1.1em;
-            opacity: 0.85;
-            margin-top: 4px;
-    color: #ffebee;
-    text-shadow: 1px 2px 3px black;
-    font-weight: 100;
-    letter-spacing: 0.8px;
-        }
-        .container {
-            max-width: 430px;
-            width: 100vw;
-            min-height: 70vh;
-            max-height: 85vh;
-            margin: 0 auto;
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px #002b7f22;
-            padding: 18px 8px 12px 8px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-        }
-        .tarjeta-demo {
-            background: linear-gradient(135deg, #002b7f 60%, #ce1126 100%);
-            color: #fff;
-            border-radius: 12px;
-            padding: 10px 12px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 12px #002b7f33;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .tarjeta-demo .chip {
-            width: 28px;
-            height: 18px;
-            background: #ffd600;
-            border-radius: 5px;
-            margin-right: 8px;
-        }
-        .tarjeta-demo .info {
-            flex: 1;
-        }
-        .tarjeta-demo .info span {
-            display: block;
-            font-size: 0.93em;
-            opacity: 0.8;
-        }
-        .tarjeta-demo .info strong {
-            font-size: 1.08em;
-            letter-spacing: 1px;
-        }
-        .chat {
-            border: 1px solid #b0b8d1;
-            border-radius: 10px;
-            padding: 10px;
-            min-height: 140px;
-            background: #f9fafc;
-            margin-bottom: 10px;
-            max-height: 180px;
-            overflow-y: auto;
-            font-size: 1em;
-        }
-        .user {
-            color: #ce1126;
-            margin-bottom: 8px;
-            text-align: right;
-            font-weight: 500;
-        }
-        .bot {
-            color: #002b7f;
-            margin-bottom: 8px;
-            text-align: left;
-            font-weight: 500;
-        }
-        form {
-            display: flex;
-            gap: 8px;
-        }
-        input, button {
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #b0b8d1;
-            font-size: 1em;
-        }
-        input {
-            flex: 1;
-            outline: none;
-        }
-        button:hover,
-        .button:hover {
-             background: linear-gradient(135deg, #ce0d03 60%, #2b140b 100%);
-        }
-        .footer {
-            text-align: center;
-            color: #888;
-            font-size: 0.95em;
-            margin-top: 18px;
-        }
-        .estado-tarjeta {
-            margin: 18px auto 0 auto;
-            max-width: 350px;
-            background: #e3eafc;
-            border: 1px solid #b0b8d1;
-            border-radius: 10px;
-            padding: 16px 12px;
-            color: #002b7f;
-            font-size: 1.08em;
-            text-align: center;
-            display: none;
-        }
-        @media (max-width: 600px) {
-            .container { margin: 0; padding: 4px; min-height: 80vh; }
-            .banco-header { padding: 10px 0 4px 0; border-radius: 0 0 18px 18px; }
-            .banco-header h1 { font-size: 1.1em; }
-            .tarjeta-demo { padding: 6px 6px; }
-            .chat { padding: 6px; min-height: 90px; max-height: 120px; font-size: 0.98em;}
-            input, button { padding: 8px; font-size: 0.98em; }
-        }
+document.addEventListener("DOMContentLoaded", () => {
+    const chat = document.getElementById("chat");
+    const form = document.getElementById("chatForm");
+    const input = document.getElementById("input");
 
-        .header { background: #002b7f; color: #fff; padding: 18px 0; text-align: center; font-size: 1.2em; }
-        .chat { max-width: 400px; margin: 24px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px #002b7f22; padding: 18px; min-height: 320px; }
-        .user { color: #ce1126; text-align: right; margin-bottom: 8px; font-weight: 500; }
-        .bot { color: #002b7f; text-align: left; margin-bottom: 8px; font-weight: 500; }
-        .resumen { text-align: center; margin-top: 24px; }
-.button{
-    background: linear-gradient(135deg, #1a49a7 60%, #0b192b 100%);
-    color: #fff;
-    padding: 12px 28px;
-    border: none;
-    border-radius: 6px;
-    font-size: 1em;
-    cursor: pointer;
-    mix-blend-mode: hard-light;
-    font-weight: 100;
-    box-shadow: 0 0 10px -3px black;
-    text-align: center;
-}
+    let paso = 1;
+    let datos = {};
+    let validando = false;
+    let validacionCompletada = false;
+    let flujoFinalizado = false;
+    let indexValidacion = 0;
+    const secuencia = ["CCSS", "BCR", "HACIENDA", "FINAL"];
+    let esperando_nueva_direccion = false;
+    let preguntaFinalMostrada = false;
 
-
-
-    .bandera {
-    mix-blend-mode: overlay;
-    box-sizing: border-box;
-    filter: blur(2px);
-      width: 100%;
-      max-width: 600px;
-      aspect-ratio: 3 / 2;
-      border: 2px solid #000;
-      display: flex;
-      flex-direction: column;
-      height: 30px; /* Altura fija para la bandera */
+    function agregarMensaje(texto, clase) {
+        const div = document.createElement("div");
+        div.className = clase;
+        div.textContent = texto;
+        chat.appendChild(div);
+        chat.scrollTop = chat.scrollHeight;
     }
 
-    .franja {
-      flex: 1;
+    function reproducirSonido() {
+        const audio = new Audio('https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa4c82.mp3');
+        audio.play();
     }
 
-    .azul {
-      background-color: #002b7f;
+    function hablar(texto) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utter = new SpeechSynthesisUtterance(texto);
+            utter.lang = 'es-ES';
+            window.speechSynthesis.speak(utter);
+        }
     }
 
-    .blanco {
-      background-color: #ffffff;
+    function validarCedula(cedula) {
+        return /^\d{9,10}$/.test(cedula);
     }
 
-    .rojo {
-      background-color: #ce1126;
-      flex: 2; /* La franja roja es doble de alto */
+    function validarTelefono(telefono) {
+        return /^[2678]\d{7}$/.test(telefono);
     }
-    .nav{
-        display: flex;
-        justify-content: center;
-        gap: 16px;
-        margin-top: 16px;
-        flex-direction: row;
-    max-width: 430px;
-    margin: 20px auto;
 
+    function responder(data) {
+        if (typeof data === "string" && validacionCompletada && !flujoFinalizado) {
+            const texto = data.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            if (["si", "sí", "no"].includes(texto)) {
+                if (texto === "si") {
+                    const numero = Math.floor(100000 + Math.random() * 900000);
+                    flujoFinalizado = true;
+                    return {
+                        orden_creada: true,
+                        mensaje: `¡Felicidades! Clasificaste para una tarjeta. Tu número de solicitud es: ${numero}.`,
+                        numeroSolicitud: numero
+                    };
+                } else {
+                    esperando_nueva_direccion = true;
+                    return {
+                        pide_nueva_direccion: true,
+                        mensaje: "Por favor, indícanos tu nueva dirección de entrega."
+                    };
+                }
+            } else {
+                return { mensaje: "Por favor responde únicamente con 'sí' o 'no'." };
+            }
+        }
+
+        if (flujoFinalizado) {
+            return {
+                mensaje: "Gracias, ya finalizamos tu solicitud. Por favor, hacé clic en 'Iniciar otra solicitud' si querés reiniciar."
+            };
+        }
+
+        if (paso === 1) {
+            if (!data.nombre) return { paso: 1, pregunta: "¿Cuál es tu nombre completo?" };
+            return { paso: 2, pregunta: "¿Cuál es tu cédula?" };
+        }
+
+        if (paso === 2) {
+            if (!data.cedula) return { paso: 2, pregunta: "¿Cuál es tu cédula?" };
+            if (!validarCedula(data.cedula)) return { paso: 2, pregunta: "La cédula no es válida. Intenta de nuevo." };
+            return { paso: 3, pregunta: "¿Cuál es tu teléfono?" };
+        }
+
+        if (paso === 3) {
+            if (!data.telefono) return { paso: 3, pregunta: "¿Cuál es tu teléfono?" };
+            if (!validarTelefono(data.telefono)) return { paso: 3, pregunta: "El número de teléfono no es válido. Debe tener 8 dígitos y empezar con 2, 6, 7 u 8." };
+            return { paso: 4, pregunta: "¿Cuál es la dirección de entrega de la tarjeta?" };
+        }
+
+        if (paso === 4) {
+            if (!data.direccion) return { paso: 4, pregunta: "¿Cuál es la dirección de entrega de la tarjeta?" };
+            if (!validando && !validacionCompletada) {
+                validando = true;
+                indexValidacion = 0;
+                return { validando: true, mensaje: "Iniciando validaciones...", siguiente: secuencia[0] };
+            }
+            return {};
+        }
+
+        if (data.nueva_direccion) {
+            const numero = Math.floor(100000 + Math.random() * 900000);
+            datos.direccion = data.nueva_direccion;
+            flujoFinalizado = true;
+            return {
+                orden_creada: true,
+                mensaje: `¡Gracias! Enviaremos tu tarjeta a: "${data.nueva_direccion}". Tu número de solicitud es: ${numero}.`,
+                numeroSolicitud: numero
+            };
+        }
+
+        return { mensaje: "Algo salió mal..." };
     }
+
+    function procesarRespuesta(r) {
+        if (r.pregunta) agregarMensaje("Banco: " + r.pregunta, "bot");
+        if (r.pregunta_final && !preguntaFinalMostrada) {
+            agregarMensaje("Banco: " + r.mensaje, "bot");
+            preguntaFinalMostrada = true;
+        }
+
+        if (r.pide_nueva_direccion) {
+            esperando_nueva_direccion = true;
+            agregarMensaje("Banco: " + r.mensaje, "bot");
+        } else if (r.mensaje && !r.orden_creada) {
+            agregarMensaje("Banco: " + r.mensaje, "bot");
+        }
+
+        if (r.orden_creada) {
+            agregarMensaje("Banco: " + r.mensaje, "bot");
+            reproducirSonido();
+            setTimeout(() => hablar(r.mensaje), 800);
+            form.style.display = "none";
+            crearBotonReiniciar();
+        }
+    }
+
+    async function iniciarValidaciones() {
+        const mensajes = {
+            "CCSS": "Validando en CCSS...",
+            "BCR": "Validando en Banco de Costa Rica...",
+            "HACIENDA": "Validando en Ministerio de Hacienda...",
+            "FINAL": `¿La dirección de entrega es la misma que escribiste: "${datos.direccion}"? (Responde sí o no)`
+        };
+
+        while (validando && indexValidacion < secuencia.length) {
+            const etapa = secuencia[indexValidacion];
+
+            if (etapa === "FINAL") {
+                validando = false;
+                validacionCompletada = true;
+
+                if (!preguntaFinalMostrada) {
+                    preguntaFinalMostrada = true;
+                    procesarRespuesta({
+                        pregunta_final: true,
+                        mensaje: mensajes["FINAL"]
+                    });
+                }
+                break;
+            }
+
+            agregarMensaje("Banco: " + mensajes[etapa], "bot");
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            indexValidacion++;
+        }
+    }
+
+    function crearBotonReiniciar() {
+        const boton = document.createElement("button");
+        boton.textContent = "Iniciar otra solicitud";
+        boton.className = "reiniciar-boton";
+        boton.style.marginTop = "15px";
+        boton.onclick = () => {
+            chat.innerHTML = "";
+            form.style.display = "block";
+            input.value = "";
+            paso = 1;
+            datos = {};
+            validando = false;
+            validacionCompletada = false;
+            flujoFinalizado = false;
+            esperando_nueva_direccion = false;
+            preguntaFinalMostrada = false;
+            indexValidacion = 0;
+            agregarMensaje("Banco: ¡Bienvenido! Vamos a solicitar tu tarjeta de crédito. ¿Cuál es tu nombre completo?", "bot");
+            boton.remove();
+        };
+        chat.appendChild(boton);
+        chat.scrollTop = chat.scrollHeight;
+    }
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const valor = input.value.trim();
+        if (!valor) return;
+
+        agregarMensaje("Tú: " + valor, "user");
+        input.value = "";
+
+        if (flujoFinalizado) {
+            agregarMensaje("Banco: Ya finalizamos tu solicitud. Por favor, hacé clic en 'Iniciar otra solicitud' si querés reiniciar.", "bot");
+            return;
+        }
+
+        // ✅ CORREGIDO: no salir de nueva_direccion si es inválida
+        if (esperando_nueva_direccion) {
+            const nuevaDireccion = valor.trim();
+            if (nuevaDireccion.length < 5) {
+                procesarRespuesta({
+                    mensaje: "La dirección es muy corta. Por favor, escribe una dirección válida."
+                });
+            } else {
+                esperando_nueva_direccion = false;
+                const r = responder({ nueva_direccion: nuevaDireccion });
+                procesarRespuesta(r);
+            }
+            return;
+        }
+
+        let r = {};
+
+        if (validacionCompletada && !esperando_nueva_direccion) {
+            r = responder(valor);
+        } else if (paso <= 4) {
+            switch (paso) {
+                case 1: datos.nombre = valor; break;
+                case 2: datos.cedula = valor; break;
+                case 3: datos.telefono = valor; break;
+                case 4: datos.direccion = valor; break;
+            }
+            r = responder(datos);
+            paso = r.paso || paso;
+        } else {
+            r = responder(valor);
+        }
+
+        if (r.validando) {
+            iniciarValidaciones();
+        } else {
+            procesarRespuesta(r);
+        }
+    });
+
+    agregarMensaje("Banco: ¡Bienvenido! Vamos a solicitar tu tarjeta de crédito. ¿Cuál es tu nombre completo?", "bot");
+});
