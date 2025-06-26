@@ -1,14 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Pruebas Automáticas - Banco de Costa Rica</title>
-    <meta name="viewport" content="width=430, initial-scale=1">
-    <link rel="stylesheet" href="./css/styles.css"> 
+    <title>Solicita tu Tarjeta - Banco de Validación</title>
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="/bcr-favicon.png">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  
+    
     <div class="banco-header">
         <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Banco Logo" class="logo"/>
         <h1>Banco Validación</h1>
@@ -23,13 +23,87 @@
     </div>
 
 
+    <!-- Navegación -->
+
     <div class="nav" >
         <a href="./index.html" class="button">Volver al Chat</a>
         <a href="./reporte-pruebas.html" class="button">Ver Reportes</a>
-    </div>
 
-    <div class="chat" id="chat"></div>
-    <div class="resumen" id="resumen"></div>
-    <script src="./js/pruebas.js"></script>
+        <button id="btnChat" class="button">Chat con Asistente</button>
+    </div>
+    <!-- Formulario de Solicitud -->
+   
+    <div class="container">
+        <div class="tarjeta-demo">
+            <div class="chip"></div>
+            <div class="info">
+                <span>Tarjeta de Crédito</span>
+                <strong>Banco Validación</strong>
+            </div>
+            <img src="https://cdn-icons-png.flaticon.com/512/196/196578.png" alt="Visa" width="38"/>
+        </div>
+        <div class="chat" id="chat"></div>
+        <form id="chatForm">
+            <input type="text" id="input" placeholder="Escribe tu respuesta..." autocomplete="off" required />
+            <button type="submit">Enviar</button>
+        </form>
+        <div id="estado-tarjeta" class="estado-tarjeta"></div>
+    </div>
+    <div class="footer">
+        &copy; 2025 Banco Validación. Todos los derechos reservados.
+    </div>
+    <div style="text-align:center; margin-top:24px;">
+        <div id="resultados-pruebas" style="margin-top:18px; color:#222; font-size:1.05em;"></div>
+    </div>
+    
+
+
+  <!-- Chat Asistente -->
+  <aside id="chatContainer" class="chat-container">
+    <div id="chatWindow" class="chat-window"></div>
+    <div class="chat-input">
+      <input id="mensaje" type="text" placeholder="Escribe tu mensaje..." />
+      <button id="btnEnviarChat">Enviar</button>
+    </div>
+  </aside>
+
+    <!-- Scripts JS -->
+    <script src="js/main.js"></script>
+    <script type="module" src="js/chatbot.js"></script>
+    <script type="module">
+        import { enviarMensaje } from './js/chatbot.js';
+        
+        // Mostrar/ocultar chat
+        const btnChat = document.getElementById('btnChat');
+        const chatContainer = document.getElementById('chatContainer');
+        btnChat.addEventListener('click', () => {
+          chatContainer.style.display = chatContainer.style.display === 'none' ? 'flex' : 'none';
+        });
+    
+    
+        // Envío de mensajes al asistente
+        const inputMsg = document.getElementById('mensaje');
+        const chatWindow = document.getElementById('chatWindow');
+        const btnEnviarChat = document.getElementById('btnEnviarChat');
+        btnEnviarChat.addEventListener('click', async () => {
+          const texto = inputMsg.value.trim();
+          if (!texto) return;
+    
+          // Mensaje usuario
+          const userEl = document.createElement('div'); userEl.className = 'user'; userEl.textContent = texto;
+          chatWindow.appendChild(userEl);
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+    
+          // Llamada OpenAI
+          const respuesta = await enviarMensaje(texto);
+    
+          // Mensaje asistente
+          const botEl = document.createElement('div'); botEl.className = 'bot'; botEl.textContent = respuesta;
+          chatWindow.appendChild(botEl);
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+    
+          inputMsg.value = '';
+        });
+      </script>
 </body>
 </html>
