@@ -247,3 +247,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
     agregarMensaje("Banco: ¡Bienvenido! Vamos a solicitar tu tarjeta de crédito. ¿Cuál es tu nombre completo?", "bot");
 });
+
+ 
+    // Mostrar/ocultar chat
+    const btnChat = document.getElementById('btnChat');
+    const chatContainer = document.getElementById('chatContainer');
+    btnChat.addEventListener('click', () => {
+      chatContainer.style.display = chatContainer.style.display === 'none' ? 'flex' : 'none';
+    });
+        // // Envío de formulario de solicitud
+        // document.getElementById('formSolicitud').onsubmit = function(e) {
+        //     e.preventDefault();
+        //     validarFormulario();
+        // };
+
+        // // Botón de enviar mensaje al asistente
+        // document.getElementById('btnEnviarChat').onclick = async () => {
+        //     const input = document.getElementById('mensaje');
+        //     const chatWindow = document.getElementById('chatWindow');
+        //     const texto = input.value.trim();
+        //     if (!texto) return;
+
+        //     // Mostrar mensaje del usuario
+        //     const userMsg = document.createElement('div');
+        //     userMsg.className = 'user';
+        //     userMsg.textContent = texto;
+        //     chatWindow.appendChild(userMsg);
+        //     chatWindow.scrollTop = chatWindow.scrollHeight;
+
+        //     // Enviar a OpenAI
+        //     const respuesta = await enviarMensaje(texto);
+
+        //     // Mostrar respuesta del asistente
+        //     const botMsg = document.createElement('div');
+        //     botMsg.className = 'bot';
+        //     botMsg.textContent = respuesta;
+        //     chatWindow.appendChild(botMsg);
+        //     chatWindow.scrollTop = chatWindow.scrollHeight;
+
+        //     input.value = '';
+        // };
